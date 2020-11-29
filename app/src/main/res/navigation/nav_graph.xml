@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/worldCasesFragment">
+
+    <fragment
+        android:id="@+id/worldCasesFragment"
+        android:name="com.flpereira.covidworldtracker.ui.fragments.WorldCasesFragment"
+        android:label="world_fragment"
+        tools:layout="@layout/world_fragment" >
+        <action
+            android:id="@+id/action_worldCasesFragment_to_countriesListFragment"
+            app:destination="@id/countriesListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/countriesListFragment"
+        android:name="com.flpereira.covidworldtracker.ui.fragments.CountriesListFragment"
+        android:label="CountriesListFragment" />
+</navigation>
