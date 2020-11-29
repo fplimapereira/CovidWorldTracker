@@ -12,27 +12,30 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+//todo: por padrão geralmente uma view tem um view model pra ela (caso necessário),
+// esse viewModel tá sendo usado por mais de uma view o que não é recomendado
 @ExperimentalCoroutinesApi
-class DataViewModel
-@ViewModelInject
-constructor(private val repo: Repository): ViewModel(){
+class DataViewModel @ViewModelInject constructor(private val repo: Repository) : ViewModel() {
 
     private val _dataState: MutableLiveData<DataState<WorldCasesData>> = MutableLiveData()
     val dataState: LiveData<DataState<WorldCasesData>>
-    get() = _dataState
+        get() = _dataState
 
-    private val _countriesListData: MutableLiveData<DataState<List<CountryListItem>>> = MutableLiveData()
+    private val _countriesListData: MutableLiveData<DataState<List<CountryListItem>>> =
+        MutableLiveData()
     val countriesListData: LiveData<DataState<List<CountryListItem>>>
-    get() = _countriesListData
+        get() = _countriesListData
 
-    fun setStateEvent(mainStateEvent: MainStateEvent){
+    val filteredCountriesListData = MutableLiveData<List<CountryListItem>>()
+
+    fun setStateEvent(mainStateEvent: MainStateEvent) {
         viewModelScope.launch {
-            when(mainStateEvent){
+            when (mainStateEvent) {
 
                 is MainStateEvent.GetWorldDataEvent -> {
-                   repo.getWorldCasesData().collect{
-                       _dataState.value = it
-                   }
+                    repo.getWorldCasesData().collect {
+                        _dataState.value = it
+                    }
                 }
 
                 is MainStateEvent.GetCountriesListEvent -> {
@@ -50,26 +53,20 @@ constructor(private val repo: Repository): ViewModel(){
     }
 
     fun filterList(char: String) {
-        when(countriesListData.value){
-            is DataState.Success<List<CountryListItem>> -> {
-                _countriesListData.value = (countriesListData.value as DataState.Success<List<CountryListItem>>).data.filter {
-                    it.name.contains(char)
-
+        if (countriesListData.value is DataState.Success) {
+            filteredCountriesListData.value =
+                (countriesListData.value as DataState.Success<List<CountryListItem>>).data.filter {
+                    it.name.contains(char, ignoreCase = true)
                 }
         }
     }
-
-
-    }
-
-
 }
 
-sealed class MainStateEvent{
+sealed class MainStateEvent {
 
-    object GetWorldDataEvent: MainStateEvent()
+    object GetWorldDataEvent : MainStateEvent()
 
-    object GetCountriesListEvent: MainStateEvent()
+    object GetCountriesListEvent : MainStateEvent()
 
-    object GetCountryDataEvent: MainStateEvent()
+    object GetCountryDataEvent : MainStateEvent()
 }

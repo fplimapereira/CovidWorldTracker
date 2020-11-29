@@ -18,12 +18,12 @@ import com.flpereira.covidworldtracker.util.DataState
 import com.flpereira.covidworldtracker.util.snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.countries_list_fragment.*
-import kotlinx.android.synthetic.main.world_fragment.*
 import kotlinx.coroutines.*
 
+//todo: o synthetic foi deprecado, recomendo aprender view binding, não confundir com databinding
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class CountriesListFragment: Fragment(R.layout.countries_list_fragment) {
+class CountriesListFragment : Fragment(R.layout.countries_list_fragment) {
 
     private lateinit var cAdapter: CountriesListAdapter
     lateinit var viewModel: DataViewModel
@@ -41,9 +41,7 @@ class CountriesListFragment: Fragment(R.layout.countries_list_fragment) {
             job = MainScope().launch {
                 delay(BuildConfig.SEARCH_DELAY)
                 editable?.let {
-                    if (editable.toString().isNotEmpty()){
-                        viewModel.filterList(editable.toString())
-                    }
+                    viewModel.filterList(editable.toString())
                 }
             }
         }
@@ -58,42 +56,46 @@ class CountriesListFragment: Fragment(R.layout.countries_list_fragment) {
     }
 
     private fun subscribeObservers() {
-        viewModel.countriesListData.observe(viewLifecycleOwner, Observer { dataSet ->
-            when(dataSet){
-                is DataState.Success<List<CountryListItem>> -> {
-                    displayProgressBar(false)
-                    addDataSet(dataSet.data)
-                }
+        with(viewModel) {
+            countriesListData.observe(viewLifecycleOwner, Observer { dataSet ->
+                when (dataSet) {
+                    is DataState.Success<List<CountryListItem>> -> {
+                        displayProgressBar(false)
+                        addDataSet(dataSet.data)
+                    }
 
-                is DataState.Error -> {
-                    displayProgressBar(false)
-                    displayError(dataSet.exception.message)
-                }
+                    is DataState.Error -> {
+                        displayProgressBar(false)
+                        displayError(dataSet.exception.message)
+                    }
 
-                is DataState.Loading -> {
-                    displayProgressBar(true)
+                    is DataState.Loading -> {
+                        displayProgressBar(true)
+                    }
                 }
-            }
-        })
+            })
+
+            filteredCountriesListData.observe(viewLifecycleOwner, Observer { addDataSet(it) })
+        }
     }
 
     private fun addDataSet(data: List<CountryListItem>) {
         cAdapter.submitList(data)
     }
 
-    private fun displayError(message: String?){
+    private fun displayError(message: String?) {
         error = message ?: "Unknow error"
         clRoot.snackbar(error)
         Log.e(">>>> NUMBER ERROR <<<<", error)
     }
 
 
-    private fun displayProgressBar(isDisplayed: Boolean){
-        if (isDisplayed){
+    private fun displayProgressBar(isDisplayed: Boolean) {
+        if (isDisplayed) {
             progressLoader.visibility = View.VISIBLE.also {
                 progressLoader.start()
             }
-        } else{
+        } else {
             progressLoader.stop().also {
                 progressLoader.visibility = View.GONE
             }
