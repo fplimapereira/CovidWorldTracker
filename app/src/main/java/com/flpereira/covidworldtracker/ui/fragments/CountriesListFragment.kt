@@ -2,18 +2,19 @@ package com.flpereira.covidworldtracker.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flpereira.covidworldtracker.BuildConfig
-import com.flpereira.covidworldtracker.R
 import com.flpereira.covidworldtracker.adapter.CountriesListAdapter
+import com.flpereira.covidworldtracker.databinding.CountriesListFragmentBinding
 import com.flpereira.covidworldtracker.model.CountryListItem
-import com.flpereira.covidworldtracker.ui.DataViewModel
-import com.flpereira.covidworldtracker.ui.MainActivity
-import com.flpereira.covidworldtracker.ui.MainStateEvent
+import com.flpereira.covidworldtracker.ui.viewmodel.CountriesViewModel
 import com.flpereira.covidworldtracker.util.DataState
 import com.flpereira.covidworldtracker.util.snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,17 +24,25 @@ import kotlinx.coroutines.*
 //todo: o synthetic foi deprecado, recomendo aprender view binding, não confundir com databinding
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class CountriesListFragment : Fragment(R.layout.countries_list_fragment) {
+class CountriesListFragment : Fragment() {
 
+    private var _binding: CountriesListFragmentBinding? = null
+    private val binding get() = _binding!!
     private lateinit var cAdapter: CountriesListAdapter
-    lateinit var viewModel: DataViewModel
+    private val viewModel: CountriesViewModel by viewModels()
     lateinit var error: String
     var job: Job? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
+        _binding = CountriesListFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
-        viewModel.setStateEvent(MainStateEvent.GetCountriesListEvent)
         initRecyclerView()
         subscribeObservers()
         etSearch.addTextChangedListener { editable ->
@@ -100,5 +109,10 @@ class CountriesListFragment : Fragment(R.layout.countries_list_fragment) {
                 progressLoader.visibility = View.GONE
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
