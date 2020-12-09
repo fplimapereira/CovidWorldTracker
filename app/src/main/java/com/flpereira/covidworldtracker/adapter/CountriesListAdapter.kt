@@ -1,16 +1,16 @@
 package com.flpereira.covidworldtracker.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.flpereira.covidworldtracker.R
 import com.flpereira.covidworldtracker.model.CountryListItem
 import com.flpereira.covidworldtracker.util.getUrlImage
 import kotlinx.android.synthetic.main.country_list_item.view.*
 
-class CountriesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CountriesListAdapter(val clickListener: imageItemClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<CountryListItem> = ArrayList()
 
@@ -27,6 +27,9 @@ class CountriesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is CountryViewHolder){
             holder.bind(items.get(position))
+            holder.itemView.setOnClickListener(View.OnClickListener {
+                clickListener.onItemClick(holder.itemView.imgFlag)
+            })
         }
     }
 
@@ -43,5 +46,9 @@ class CountriesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             countryName.text = item.name
             imgFlag.getUrlImage(item.flagUrl)
         }
+    }
+
+    interface imageItemClickListener {
+        fun onItemClick(imageView: ImageView)
     }
 }

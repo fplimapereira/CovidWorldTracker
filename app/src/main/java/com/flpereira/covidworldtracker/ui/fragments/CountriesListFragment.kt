@@ -18,7 +18,6 @@ import com.flpereira.covidworldtracker.ui.viewmodel.CountriesViewModel
 import com.flpereira.covidworldtracker.util.DataState
 import com.flpereira.covidworldtracker.util.snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.countries_list_fragment.*
 import kotlinx.coroutines.*
 
 //todo: o synthetic foi deprecado, recomendo aprender view binding, não confundir com databinding
@@ -45,7 +44,7 @@ class CountriesListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         subscribeObservers()
-        etSearch.addTextChangedListener { editable ->
+        binding.etSearch.addTextChangedListener { editable ->
             job?.cancel()
             job = MainScope().launch {
                 delay(BuildConfig.SEARCH_DELAY)
@@ -57,10 +56,10 @@ class CountriesListFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        countryRecView.apply {
+        binding.countryRecView.apply {
             layoutManager = LinearLayoutManager(context)
             cAdapter = CountriesListAdapter()
-            countryRecView.adapter = cAdapter
+            binding.countryRecView.adapter = cAdapter
         }
     }
 
@@ -94,18 +93,20 @@ class CountriesListFragment : Fragment() {
 
     private fun displayError(message: String?) {
         error = message ?: "Unknow error"
-        clRoot.snackbar(error)
+            binding.clRoot.snackbar(error)
         Log.e(">>>> NUMBER ERROR <<<<", error)
     }
 
 
     private fun displayProgressBar(isDisplayed: Boolean) {
         if (isDisplayed) {
-            progressLoader.visibility = View.VISIBLE.also {
+            binding.apply {
+                progressLoader.visibility = View.VISIBLE
                 progressLoader.start()
             }
         } else {
-            progressLoader.stop().also {
+            binding.apply {
+                progressLoader.stop()
                 progressLoader.visibility = View.GONE
             }
         }

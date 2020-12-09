@@ -17,5 +17,13 @@
     <fragment
         android:id="@+id/countriesListFragment"
         android:name="com.flpereira.covidworldtracker.ui.fragments.CountriesListFragment"
-        android:label="CountriesListFragment" />
+        android:label="CountriesListFragment" >
+        <action
+            android:id="@+id/action_countriesListFragment_to_countryDetailsFragment"
+            app:destination="@id/countryDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/countryDetailsFragment"
+        android:name="com.flpereira.covidworldtracker.ui.fragments.CountryDetailsFragment"
+        android:label="CountryDetailsFragment" />
 </navigation>
