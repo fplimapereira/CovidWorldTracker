@@ -5,11 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
 import com.flpereira.covidworldtracker.BuildConfig
 import com.flpereira.covidworldtracker.adapter.CountriesListAdapter
 import com.flpereira.covidworldtracker.databinding.CountriesListFragmentBinding
@@ -20,7 +25,6 @@ import com.flpereira.covidworldtracker.util.snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
-//todo: o synthetic foi deprecado, recomendo aprender view binding, não confundir com databinding
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class CountriesListFragment : Fragment() {
@@ -37,6 +41,8 @@ class CountriesListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = CountriesListFragmentBinding.inflate(inflater, container, false)
+        sharedElementReturnTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         return binding.root
     }
 
@@ -58,8 +64,12 @@ class CountriesListFragment : Fragment() {
     private fun initRecyclerView() {
         binding.countryRecView.apply {
             layoutManager = LinearLayoutManager(context)
-            cAdapter = CountriesListAdapter()
+            cAdapter = CountriesListAdapter(flagItemListener)
             binding.countryRecView.adapter = cAdapter
+        }
+        postponeEnterTransition()
+        binding.countryRecView.doOnPreDraw {
+            startPostponedEnterTransition()
         }
     }
 
@@ -89,6 +99,15 @@ class CountriesListFragment : Fragment() {
 
     private fun addDataSet(data: List<CountryListItem>) {
         cAdapter.submitList(data)
+    }
+
+    private var flagItemListener = CountriesListAdapter.OnClickListener{flag, flagString ->
+        val direction: NavDirections = CountriesListFragmentDirections.
+        actionCountriesListFragmentToCountryDetailsFragment()
+        val extra = FragmentNavigatorExtras(
+            flag to flagString
+        )
+        findNavController().navigate(direction, extra)
     }
 
     private fun displayError(message: String?) {

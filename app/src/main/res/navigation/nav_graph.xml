@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/worldCasesFragment"
         android:name="com.flpereira.covidworldtracker.ui.fragments.WorldCasesFragment"
-        android:label="world_fragment"
-        tools:layout="@layout/world_fragment" >
+        android:label="Covid Tracker"
+        tools:layout="@layout/world_fragment">
         <action
             android:id="@+id/action_worldCasesFragment_to_countriesListFragment"
             app:destination="@id/countriesListFragment" />
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/countriesListFragment"
         android:name="com.flpereira.covidworldtracker.ui.fragments.CountriesListFragment"
-        android:label="CountriesListFragment" >
+        android:label="Covid Tracker">
         <action
             android:id="@+id/action_countriesListFragment_to_countryDetailsFragment"
             app:destination="@id/countryDetailsFragment" />

@@ -10,7 +10,7 @@ import com.flpereira.covidworldtracker.model.CountryListItem
 import com.flpereira.covidworldtracker.util.getUrlImage
 import kotlinx.android.synthetic.main.country_list_item.view.*
 
-class CountriesListAdapter(val clickListener: imageItemClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CountriesListAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<CountryListItem> = ArrayList()
 
@@ -26,10 +26,7 @@ class CountriesListAdapter(val clickListener: imageItemClickListener): RecyclerV
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is CountryViewHolder){
-            holder.bind(items.get(position))
-            holder.itemView.setOnClickListener(View.OnClickListener {
-                clickListener.onItemClick(holder.itemView.imgFlag)
-            })
+            holder.bind(items[position], onClickListener)
         }
     }
 
@@ -42,13 +39,18 @@ class CountriesListAdapter(val clickListener: imageItemClickListener): RecyclerV
         val imgFlag = itemView.imgFlag
         val countryName = itemView.countryName
 
-        fun bind(item: CountryListItem){
+        fun bind(item: CountryListItem, onClickListener: OnClickListener){
             countryName.text = item.name
             imgFlag.getUrlImage(item.flagUrl)
+            imgFlag.transitionName = itemView.imgFlag.toString()
+            itemView.setOnClickListener {
+                onClickListener.onClick(imgFlag, itemView.imgFlag.toString())
+            }
+
         }
     }
 
-    interface imageItemClickListener {
-        fun onItemClick(imageView: ImageView)
+    class OnClickListener(val clickListener: (ImageView, String) -> Unit) {
+        fun onClick(flag: ImageView, flagString: String) = clickListener(flag, flagString)
     }
 }
