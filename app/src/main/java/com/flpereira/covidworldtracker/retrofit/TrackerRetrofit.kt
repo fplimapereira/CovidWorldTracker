@@ -1,7 +1,7 @@
 package com.flpereira.covidworldtracker.retrofit
 
-import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface TrackerRetrofit {
 
@@ -10,4 +10,10 @@ interface TrackerRetrofit {
 
     @GET("countries")
     suspend fun getCountriesData(): List<CountriesDataNetworkEntity>
+
+    @GET("countries")
+    suspend fun getCountryData(
+        @Query("q")
+        searchQuery: String
+    ): CountriesDataNetworkEntity
 }

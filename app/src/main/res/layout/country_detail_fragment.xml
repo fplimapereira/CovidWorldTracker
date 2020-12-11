@@ -255,4 +255,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
+    <com.leo.simplearcloader.SimpleArcLoader
+        android:id="@+id/loader"
+        android:layout_width="@dimen/sixty"
+        android:layout_height="@dimen/sixty"
+        app:arc_style="simple_arc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flagView"
+        app:layout_constraintVertical_bias="0.324" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

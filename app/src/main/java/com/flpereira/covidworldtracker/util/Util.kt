@@ -2,10 +2,7 @@ package com.flpereira.covidworldtracker.util
 
 import android.view.View
 import android.widget.ImageView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.flpereira.covidworldtracker.R
 import com.google.android.material.snackbar.Snackbar
 
 fun View.snackbar(message: String){

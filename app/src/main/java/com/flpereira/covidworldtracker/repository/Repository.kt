@@ -4,9 +4,7 @@ package com.flpereira.covidworldtracker.repository
 import com.flpereira.covidworldtracker.model.CountriesData
 import com.flpereira.covidworldtracker.model.CountryListItem
 import com.flpereira.covidworldtracker.model.WorldCasesData
-import com.flpereira.covidworldtracker.retrofit.CountriesListNetworkMapper
-import com.flpereira.covidworldtracker.retrofit.WorldDataNetworkMapper
-import com.flpereira.covidworldtracker.retrofit.TrackerRetrofit
+import com.flpereira.covidworldtracker.retrofit.*
 import com.flpereira.covidworldtracker.room.CacheMapper
 import com.flpereira.covidworldtracker.room.WorldCasesDataDao
 import com.flpereira.covidworldtracker.util.DataState
@@ -19,9 +17,10 @@ class Repository(
     private val retrofit: TrackerRetrofit,
     private val cacheMapper: CacheMapper,
     private val worldDataNetworkMapper: WorldDataNetworkMapper,
-    private val countriesListNetworkMapper: CountriesListNetworkMapper
+    private val countriesListNetworkMapper: CountriesListNetworkMapper,
+    private val countryNetworkMapper: CountryNetworkMapper
 ){
-    suspend fun getWorldCasesData(): Flow<DataState<WorldCasesData>> =  flow{
+    suspend fun getWorldCasesData(): Flow<DataState<WorldCasesData>> =  flow {
         emit(DataState.Loading)
         try {
             val networkData = retrofit.getWorldCasesData()
@@ -40,6 +39,17 @@ class Repository(
             val networkCountriesData = retrofit.getCountriesData()
             val countriesList = countriesListNetworkMapper.mapFromEntityList(networkCountriesData)
             emit(DataState.Success(countriesList))
+        }catch (e: Exception){
+            emit(DataState.Error(e))
+        }
+    }
+
+    suspend fun getCountryData(searchQuery: String): Flow<DataState<CountriesData>> = flow {
+        emit(DataState.Loading)
+        try {
+            val networkCountryData = retrofit.getCountryData(searchQuery)
+            val countryData = countryNetworkMapper.mapFromEntity(networkCountryData)
+            emit(DataState.Success(countryData))
         }catch (e: Exception){
             emit(DataState.Error(e))
         }

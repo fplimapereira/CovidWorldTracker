@@ -42,15 +42,15 @@ class CountriesListAdapter(private val onClickListener: OnClickListener): Recycl
         fun bind(item: CountryListItem, onClickListener: OnClickListener){
             countryName.text = item.name
             imgFlag.getUrlImage(item.flagUrl)
-            imgFlag.transitionName = itemView.imgFlag.toString()
+            imgFlag.transitionName = item.name
             itemView.setOnClickListener {
-                onClickListener.onClick(imgFlag, itemView.imgFlag.toString())
+                onClickListener.onClick(item.name)
             }
 
         }
     }
 
-    class OnClickListener(val clickListener: (ImageView, String) -> Unit) {
-        fun onClick(flag: ImageView, flagString: String) = clickListener(flag, flagString)
+    class OnClickListener(val clickListener: (String) -> Unit) {
+        fun onClick(countryName: String) = clickListener(countryName)
     }
 }
