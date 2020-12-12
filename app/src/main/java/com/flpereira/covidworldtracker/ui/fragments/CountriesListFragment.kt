@@ -41,7 +41,7 @@ class CountriesListFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = CountriesListFragmentBinding.inflate(inflater, container, false)
         sharedElementReturnTransition =
-            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         return binding.root
     }
 
