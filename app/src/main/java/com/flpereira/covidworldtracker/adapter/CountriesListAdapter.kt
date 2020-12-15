@@ -44,13 +44,13 @@ class CountriesListAdapter(private val onClickListener: OnClickListener): Recycl
             imgFlag.getUrlImage(item.flagUrl)
             imgFlag.transitionName = item.name
             itemView.setOnClickListener {
-                onClickListener.onClick(item.name)
+                onClickListener.onClick(item.name, imgFlag)
             }
 
         }
     }
 
-    class OnClickListener(val clickListener: (String) -> Unit) {
-        fun onClick(countryName: String) = clickListener(countryName)
+    class OnClickListener(val clickListener: (String, ImageView) -> Unit) {
+        fun onClick(countryName: String, flag: ImageView) = clickListener(countryName, flag)
     }
 }

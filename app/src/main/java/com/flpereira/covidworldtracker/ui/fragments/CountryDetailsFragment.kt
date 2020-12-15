@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
-import com.flpereira.covidworldtracker.R
 import com.flpereira.covidworldtracker.databinding.CountryDetailFragmentBinding
 import com.flpereira.covidworldtracker.model.CountriesData
 import com.flpereira.covidworldtracker.ui.MainActivity
@@ -19,7 +18,6 @@ import com.flpereira.covidworldtracker.util.DataState
 import com.flpereira.covidworldtracker.util.getUrlImage
 import com.flpereira.covidworldtracker.util.snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.concurrent.TimeUnit
 
@@ -39,9 +37,11 @@ class CountryDetailsFragment: Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = CountryDetailFragmentBinding.inflate(inflater, container, false)
-        sharedElementEnterTransition =
+        val animation =
             TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-        postponeEnterTransition(1000, TimeUnit.MILLISECONDS)
+        postponeEnterTransition(500, TimeUnit.MILLISECONDS)
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
         return binding.root
     }
 

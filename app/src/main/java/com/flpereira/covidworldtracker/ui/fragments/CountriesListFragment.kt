@@ -10,11 +10,12 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.flpereira.covidworldtracker.BuildConfig
-import com.flpereira.covidworldtracker.R
 import com.flpereira.covidworldtracker.adapter.CountriesListAdapter
 import com.flpereira.covidworldtracker.databinding.CountriesListFragmentBinding
 import com.flpereira.covidworldtracker.model.CountryListItem
@@ -100,11 +101,10 @@ class CountriesListFragment : Fragment() {
         cAdapter.submitList(data)
     }
 
-    private var flagItemListener = CountriesListAdapter.OnClickListener{countryName ->
-        val bundle = Bundle().apply {
-            putString("country", countryName)
-        }
-        findNavController().navigate(R.id.action_countriesListFragment_to_countryDetailsFragment, bundle)
+    private var flagItemListener = CountriesListAdapter.OnClickListener{country, flag ->
+        val directions = CountriesListFragmentDirections.actionCountriesListFragmentToCountryDetailsFragment(country)
+        val extras = FragmentNavigatorExtras(flag to country)
+        findNavController().navigate(directions, extras)
     }
 
     private fun displayError(message: String?) {
